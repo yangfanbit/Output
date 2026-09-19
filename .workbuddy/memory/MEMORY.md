@@ -11,8 +11,25 @@ ThreeC Historical Universe Expansion 的 **R01-01（高端装备 / 机器人）*
   → 重定向到 `$env:TEMP\xxx.txt`，再用 Read 工具读。
 - Python：`C:\Users\86115\.workbuddy\binaries\python\versions\3.13.12\python.exe`
 - Read / Grep / Glob / Edit / Write 工具正常。
+- **代理：`http://127.0.0.1:7897` 可用**（环境变量里的 `127.0.0.1:9651` 已失效，会 502/超时）。
+- **git 无法 spawn sh**（`C:\APP\Working\Git` 2.23.0，`sh.exe` 找不到）。
+  → 推送时不要依赖 credential helper；把 `~/.git-credentials` 里的 token 内联进
+  `remote.origin.pushurl`，推完立即 `git config --unset remote.origin.pushurl`。
+  完整命令模板见 `2026-09-19.md`。
 
-## 三条验收命令（交付前必须全绿）
+## 远程仓库
+- `https://github.com/yangfanbit/Output`（public，默认分支 `main`）
+- 本工作区已推送；当前远程 HEAD = `4734065`（本地 HEAD 一致）
+- 凭据来源：`C:\Users\86115\.git-credentials`（user `yangfanbit`，OAuth token，scopes = gist, repo, workflow）
+
+## 绝对不要动的文件（比只读更严格——被 checksum 锁定）
+- **`.gitattributes`**：内容为 `* -text`（+2 行注释），sha256 = `c675781e439891dcd571f7f842c88284685de1e939e87c613845ed87c0f0e872`。
+  被 `workspace_checksums.sha256` 锁定，改动会让 `--check` 报 C20 FAIL、单测失败 3 项。
+  **不要为了「行尾规范化」去改写它。**
+  如需恢复：从同模板兄弟工作区复制，例如 `D:\AAIWORK\Freedom\R01-02-semiconductor\.gitattributes`。
+- `workspace_checksums.sha256`、`workspace_manifest.json`：同上，规则版本锁。
+
+## 三条验收命令（交付前必须全绿；推送后还要在干净克隆里再跑一次）
 ```
 "C:\Users\86115\.workbuddy\binaries\python\versions\3.13.12\python.exe" tools\validate_historical_research_intake.py 05_OUTPUT   → RESULT: PASS / 0 FAIL
 ... validate_historical_research_intake.py --check                                                                              → RESULT: PASS
